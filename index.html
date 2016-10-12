@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kinopoisk</title>
+    <link rel="stylesheet" type="text/css" href="mystyle.css"/>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#but').click(function () {
+                var searchText = $('#searchText').val();
+                if (searchText.length > 0) {
+                    ajaxReuest(searchText);
+                }
+                else {
+                    alert("Введите название фильма");
+                }
+            });
+
+            $('#resetButton').click(function () {
+                $('#searchText').val('');
+                $('#results').html('');
+            });
+
+        });
+
+        function ajaxReuest(term) {
+            $.ajax({
+                type: 'GET',
+                url: 'http://api.kinopoisk.cf/searchFilms',
+                data: {'keyword': term},
+                success: function (data) {
+                    if (data.searchFilms.length > 0) {
+                        $.each(data.searchFilms, function (keyFilm, valFilm) {
+
+                            var $filmTable = $('<table class="table" align="center"></table>');
+                            $.each(valFilm, function (keyAttr, valAttr) {
+
+                                if (keyAttr === "id") {
+                                    var $filtAttrTr = $('<tr><td rowspan="6" width="250px"><img src="https://st.kp.yandex.net/images/film_big/' + valAttr + '.jpg"></td></tr>');
+                                    $filmTable.append($filtAttrTr);
+                                }
+                                else if(keyAttr === "nameRU"){
+                                    var $filtAttrTr = $('<tr><th>' + valAttr + '</th></tr>');
+                                    $filmTable.append($filtAttrTr);
+                                }
+                                else if(keyAttr === "description"){
+                                    var $filtAttrTr = $('<tr><td>' + valAttr + '</td></tr>');
+                                    $filmTable.append($filtAttrTr);
+                                }
+                                else if(keyAttr === "year"){
+                                    var $filtAttrTr = $('<tr><td>' + valAttr + '</td></tr>');
+                                    $filmTable.append($filtAttrTr);
+                                }
+                                else if(keyAttr === "country"){
+                                    var $filtAttrTr = $('<tr><td>' + valAttr + '</td></tr>');
+                                    $filmTable.append($filtAttrTr);
+                                }
+                                else if(keyAttr === "genre"){
+                                    var $filtAttrTr = $('<tr><td>' + valAttr + '</td></tr>');
+                                    $filmTable.append($filtAttrTr);
+                                }
+
+                            });
+                            $('#results').append($filmTable);
+                        });
+                    }
+                    else {
+                        alert("Нет такого фильма:(")
+                    }
+                }
+            });
+        }
+    </script>
+
+
+</head>
+<body>
+
+<div id="s">
+    <div id="word"><b>К</b>ино<b>П</b>оиск</div>
+    <div id="form">
+
+        <input type="search" id="searchText">
+        <input type="submit" id="but" class="but">
+        <input type="button" id="resetButton" class="but" value="Стереть">
+    </div>
+</div>
+<div id="results"></div>
+
+
+</body>
+</html>
